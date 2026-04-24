@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:equatable/equatable.dart';
 
 enum UserRole {
@@ -28,7 +29,7 @@ class User extends Equatable {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'],
+      id: json['id'].toString(),
       email: json['email'],
       name: json['name'],
       role: UserRole.values.firstWhere(

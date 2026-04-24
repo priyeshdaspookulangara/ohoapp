@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:local_business_directory/features/auth/domain/entities/user.dart';
 import 'package:local_business_directory/features/auth/presentation/providers/auth_provider.dart';
 import 'package:local_business_directory/features/auth/presentation/screens/register_screen.dart';
+import 'package:local_business_directory/features/business/presentation/screens/business_owner_dashboard.dart';
+import 'package:local_business_directory/features/business/presentation/screens/search_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -28,9 +31,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     ref.listen(authStateProvider, (previous, next) {
       if (next.status == AuthStatus.authenticated) {
-        // Navigate to home
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Login Successful')),
+        );
+
+        final destination = next.user?.role == UserRole.businessOwner
+          ? const BusinessOwnerDashboard()
+          : const SearchScreen();
+
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => destination),
         );
       } else if (next.status == AuthStatus.error) {
         ScaffoldMessenger.of(context).showSnackBar(

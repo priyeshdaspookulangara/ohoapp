@@ -40,9 +40,10 @@ enum AuthStatus { initial, authenticating, authenticated, unauthenticated, error
 
 class AuthState {
   final AuthStatus status;
+  final User? user;
   final String? errorMessage;
 
-  AuthState({required this.status, this.errorMessage});
+  AuthState({required this.status, this.user, this.errorMessage});
 
   factory AuthState.initial() => AuthState(status: AuthStatus.initial);
 }
@@ -57,7 +58,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     final result = await _repository.login(email, password);
     result.fold(
       (failure) => state = AuthState(status: AuthStatus.error, errorMessage: failure.message),
-      (user) => state = AuthState(status: AuthStatus.authenticated),
+      (user) => state = AuthState(status: AuthStatus.authenticated, user: user),
     );
   }
 
@@ -76,7 +77,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     );
     result.fold(
       (failure) => state = AuthState(status: AuthStatus.error, errorMessage: failure.message),
-      (user) => state = AuthState(status: AuthStatus.authenticated),
+      (user) => state = AuthState(status: AuthStatus.authenticated, user: user),
     );
   }
 
