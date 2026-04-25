@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:local_business_directory/features/business/domain/entities/business.dart';
 import 'package:local_business_directory/features/business/presentation/providers/favorites_provider.dart';
 import 'package:local_business_directory/features/business/presentation/providers/business_provider.dart';
@@ -46,11 +47,36 @@ class BusinessProfileScreen extends ConsumerWidget {
                   const SizedBox(height: 8),
                   Text(business.description),
                   const Divider(height: 32),
-                  const Text('Contact Information', style: TextStyle(fontWeight: FontWeight.bold)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Contact Information', style: TextStyle(fontWeight: FontWeight.bold)),
+                      if (business.ownerId == null)
+                        TextButton.icon(
+                          onPressed: () {
+                            // Show claim dialog
+                          },
+                          icon: const Icon(Icons.verified_user),
+                          label: const Text('Claim Business'),
+                        ),
+                    ],
+                  ),
                   const SizedBox(height: 8),
                   if (business.phoneNumber != null) ListTile(leading: const Icon(Icons.phone), title: Text(business.phoneNumber!)),
                   if (business.email != null) ListTile(leading: const Icon(Icons.email), title: Text(business.email!)),
-                  ListTile(leading: const Icon(Icons.location_on), title: Text(business.address)),
+                  ListTile(
+                    leading: const Icon(Icons.location_on),
+                    title: Text(business.address),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.directions, color: Colors.blue),
+                      onPressed: () async {
+                        final url = 'https://www.google.com/maps/dir/?api=1&destination=${business.latitude},${business.longitude}';
+                        if (await canLaunchUrl(Uri.parse(url))) {
+                          await launchUrl(Uri.parse(url));
+                        }
+                      },
+                    ),
+                  ),
                   const Divider(height: 32),
                   const Text('Offerings', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                   const SizedBox(height: 8),

@@ -32,4 +32,6 @@ abstract class BusinessRepository {
   Future<Either<Failure, List<Enquiry>>> getBusinessEnquiries(String businessId);
   Future<Either<Failure, void>> sendEnquiry(String businessId, String subject, String message);
   Future<Either<Failure, void>> replyToEnquiry(String enquiryId, String reply);
+
+  Future<Either<Failure, void>> claimBusiness(String businessId, String reason);
 }

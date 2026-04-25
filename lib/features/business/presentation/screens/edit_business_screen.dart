@@ -87,6 +87,24 @@ class _EditBusinessScreenState extends ConsumerState<EditBusinessScreen> {
                   if (result != null) setState(() => _selectedLocation = result);
                 },
               ),
+              const SizedBox(height: 16),
+              const Text('Working Hours', style: TextStyle(fontWeight: FontWeight.bold)),
+              ...['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) {
+                return Row(
+                  children: [
+                    Expanded(child: Text(day)),
+                    Expanded(
+                      flex: 2,
+                      child: TextFormField(
+                        decoration: const InputDecoration(hintText: 'e.g. 09:00 - 17:00'),
+                        onChanged: (val) {
+                          // Update working hours map
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              }),
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () {

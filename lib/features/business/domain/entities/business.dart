@@ -14,6 +14,7 @@ class Business extends Equatable {
   final String? heroImageUrl;
   final List<String> galleryUrls;
   final Map<String, String>? workingHours;
+  final List<String> achievements;
   final String? youtubeVideoUrl;
   final bool isFeatured;
   final String? ownerId;
@@ -34,6 +35,7 @@ class Business extends Equatable {
     this.heroImageUrl,
     this.galleryUrls = const [],
     this.workingHours,
+    this.achievements = const [],
     this.youtubeVideoUrl,
     this.isFeatured = false,
     this.ownerId,
@@ -56,6 +58,7 @@ class Business extends Equatable {
         heroImageUrl,
         galleryUrls,
         workingHours,
+        achievements,
         youtubeVideoUrl,
         isFeatured,
         ownerId,

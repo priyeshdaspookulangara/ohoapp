@@ -15,6 +15,7 @@ class BusinessModel extends Business {
     super.heroImageUrl,
     super.galleryUrls,
     super.workingHours,
+    super.achievements,
     super.youtubeVideoUrl,
     super.isFeatured,
     super.ownerId,
@@ -39,6 +40,7 @@ class BusinessModel extends Business {
       workingHours: json['working_hours'] != null
           ? Map<String, String>.from(json['working_hours'])
           : null,
+      achievements: List<String>.from(json['achievements'] ?? []),
       youtubeVideoUrl: json['youtube_video_url'],
       isFeatured: json['is_featured'] == 1 || json['is_featured'] == true,
       ownerId: json['owner_id']?.toString(),
@@ -62,6 +64,7 @@ class BusinessModel extends Business {
       'hero_image_url': heroImageUrl,
       'gallery_urls': galleryUrls,
       'working_hours': workingHours,
+      'achievements': achievements,
       'youtube_video_url': youtubeVideoUrl,
       'is_featured': isFeatured ? 1 : 0,
       'owner_id': ownerId,
