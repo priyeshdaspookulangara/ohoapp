@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:local_business_directory/core/error/failures.dart';
 import 'package:local_business_directory/features/business/data/datasources/business_remote_data_source.dart';
 import 'package:local_business_directory/features/business/data/models/business_model.dart';
+import 'package:local_business_directory/features/business/data/models/offering_model.dart';
 import 'package:local_business_directory/features/business/domain/entities/business.dart';
 import 'package:local_business_directory/features/business/domain/entities/offering.dart';
 import 'package:local_business_directory/features/business/domain/repositories/business_repository.dart';
@@ -111,8 +112,50 @@ class BusinessRepositoryImpl implements BusinessRepository {
 
   @override
   Future<Either<Failure, List<Offering>>> getBusinessOfferings(String businessId) async {
-    // To be implemented
-    return const Right([]);
+    try {
+      final results = await remoteDataSource.getOfferings(businessId);
+      return Right(results);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Offering>> addOffering(Offering offering) async {
+    try {
+      final model = OfferingModel(
+        id: offering.id,
+        businessId: offering.businessId,
+        name: offering.name,
+        description: offering.description,
+        price: offering.price,
+        isFlagship: offering.isFlagship,
+        imageUrl: offering.imageUrl,
+      );
+      final result = await remoteDataSource.addOffering(model);
+      return Right(result);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Offering>> updateOffering(Offering offering) async {
+    try {
+      final model = OfferingModel(
+        id: offering.id,
+        businessId: offering.businessId,
+        name: offering.name,
+        description: offering.description,
+        price: offering.price,
+        isFlagship: offering.isFlagship,
+        imageUrl: offering.imageUrl,
+      );
+      final result = await remoteDataSource.updateOffering(model);
+      return Right(result);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
   }
 
   @override

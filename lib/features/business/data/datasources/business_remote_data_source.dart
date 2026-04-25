@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:local_business_directory/core/util/config.dart';
 import 'package:local_business_directory/features/business/data/models/business_model.dart';
 import 'package:local_business_directory/features/business/data/models/interaction_model.dart';
+import 'package:local_business_directory/features/business/data/models/offering_model.dart';
 
 abstract class BusinessRemoteDataSource {
   Future<List<BusinessModel>> searchBusinesses({
@@ -15,6 +16,10 @@ abstract class BusinessRemoteDataSource {
   Future<BusinessModel> createBusiness(BusinessModel business);
   Future<BusinessModel> updateBusiness(BusinessModel business);
   Future<List<BusinessModel>> getOwnedBusinesses();
+
+  Future<List<OfferingModel>> getOfferings(String businessId);
+  Future<OfferingModel> addOffering(OfferingModel offering);
+  Future<OfferingModel> updateOffering(OfferingModel offering);
 
   Future<List<ReviewModel>> getReviews(String businessId);
   Future<void> postReview(String businessId, double rating, String comment);
@@ -92,6 +97,37 @@ class BusinessRemoteDataSourceImpl implements BusinessRemoteDataSource {
       return list.map((json) => BusinessModel.fromJson(json)).toList();
     } else {
       throw Exception('Failed to get owned businesses');
+    }
+  }
+
+  @override
+  Future<List<OfferingModel>> getOfferings(String businessId) async {
+    final response = await dio.get('${AppConfig.baseUrl}/businesses/$businessId/offerings');
+    if (response.statusCode == 200) {
+      final List list = response.data;
+      return list.map((json) => OfferingModel.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to get offerings');
+    }
+  }
+
+  @override
+  Future<OfferingModel> addOffering(OfferingModel offering) async {
+    final response = await dio.post('${AppConfig.baseUrl}/businesses/${offering.businessId}/offerings', data: offering.toJson());
+    if (response.statusCode == 201) {
+      return OfferingModel.fromJson(response.data);
+    } else {
+      throw Exception('Failed to add offering');
+    }
+  }
+
+  @override
+  Future<OfferingModel> updateOffering(OfferingModel offering) async {
+    final response = await dio.put('${AppConfig.baseUrl}/offerings/${offering.id}', data: offering.toJson());
+    if (response.statusCode == 200) {
+      return OfferingModel.fromJson(response.data);
+    } else {
+      throw Exception('Failed to update offering');
     }
   }
 

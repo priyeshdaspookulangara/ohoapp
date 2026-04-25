@@ -4,6 +4,7 @@ import 'package:local_business_directory/features/business/domain/entities/busin
 import 'package:local_business_directory/features/business/presentation/providers/business_provider.dart';
 import 'package:local_business_directory/features/business/presentation/screens/business_interactions_screen.dart';
 import 'package:local_business_directory/features/business/presentation/screens/edit_business_screen.dart';
+import 'package:local_business_directory/features/business/presentation/screens/edit_offering_screen.dart';
 
 class BusinessOwnerDashboard extends ConsumerWidget {
   const BusinessOwnerDashboard({super.key});
@@ -34,6 +35,14 @@ class BusinessOwnerDashboard extends ConsumerWidget {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(builder: (_) => BusinessInteractionsScreen(businessId: business.id)),
+                        );
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.shopping_bag),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => EditOfferingScreen(businessId: business.id)),
                         );
                       },
                     ),

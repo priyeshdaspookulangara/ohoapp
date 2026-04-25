@@ -22,6 +22,8 @@ abstract class BusinessRepository {
   Future<Either<Failure, List<Business>>> getOwnedBusinesses();
 
   Future<Either<Failure, List<Offering>>> getBusinessOfferings(String businessId);
+  Future<Either<Failure, Offering>> addOffering(Offering offering);
+  Future<Either<Failure, Offering>> updateOffering(Offering offering);
 
   Future<Either<Failure, List<Review>>> getBusinessReviews(String businessId);
   Future<Either<Failure, void>> postReview(String businessId, double rating, String comment);
