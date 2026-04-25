@@ -13,7 +13,14 @@ class AdminDashboard extends ConsumerWidget {
         appBar: AppBar(
           title: const Text('Admin Dashboard'),
           bottom: const TabBar(
-            tabs: [Tab(text: 'Moderation'), Tab(text: 'Claims'), Tab(text: 'Media'), Tab(text: 'Users')],
+            isScrollable: true,
+            tabs: [
+              Tab(text: 'Moderation'),
+              Tab(text: 'Claims'),
+              Tab(text: 'Media'),
+              Tab(text: 'Users'),
+              Tab(text: 'System'),
+            ],
           ),
         ),
         body: TabBarView(
@@ -22,6 +29,7 @@ class AdminDashboard extends ConsumerWidget {
             _ClaimRequestsList(),
             _MediaManager(),
             _UserManagementList(),
+            _SystemMonitoring(),
           ],
         ),
       ),
@@ -60,6 +68,19 @@ class _UserManagementList extends StatelessWidget {
         subtitle: Text('role: ${index % 2 == 0 ? 'customer' : 'business_owner'}'),
         trailing: IconButton(icon: const Icon(Icons.delete_outline, color: Colors.red), onPressed: () {}),
       ),
+    );
+  }
+}
+
+class _SystemMonitoring extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: const [
+        ListTile(leading: Icon(Icons.payment), title: Text('Recent Payments'), subtitle: Text('\$150.00 today')),
+        ListTile(leading: Icon(Icons.message), title: Text('Total Enquiries'), subtitle: Text('42 active conversations')),
+        ListTile(leading: Icon(Icons.bug_report), title: Text('Support Tickets'), subtitle: Text('2 pending')),
+      ],
     );
   }
 }

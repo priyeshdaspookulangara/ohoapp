@@ -131,13 +131,39 @@ class _EditBusinessScreenState extends ConsumerState<EditBusinessScreen> {
               }),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    // Call repository to create/update
-                    Navigator.of(context).pop();
-                  }
-                },
-                child: const Text('Save'),
+                onPressed: _isLoading
+                    ? null
+                    : () async {
+                        if (_formKey.currentState!.validate() && _selectedLocation != null) {
+                          setState(() => _isLoading = true);
+                          final business = Business(
+                            id: widget.business?.id ?? '',
+                            name: _nameController.text,
+                            category: _categoryController.text,
+                            description: _descriptionController.text,
+                            address: _addressController.text,
+                            latitude: _selectedLocation!.latitude,
+                            longitude: _selectedLocation!.longitude,
+                            heroImageUrl: widget.business?.heroImageUrl,
+                            galleryUrls: widget.business?.galleryUrls ?? [],
+                          );
+
+                          final result = widget.business == null
+                              ? await ref.read(businessRepositoryProvider).createBusiness(business)
+                              : await ref.read(businessRepositoryProvider).updateBusiness(business);
+
+                          result.fold(
+                            (l) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.message))),
+                            (r) {
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Success')));
+                              Navigator.of(context).pop();
+                            },
+                          );
+                        } else if (_selectedLocation == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please select a location on the map')));
+                        }
+                      },
+                child: _isLoading ? const CircularProgressIndicator() : const Text('Save'),
               ),
             ],
           ),

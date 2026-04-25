@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:local_business_directory/features/auth/presentation/screens/notifications_screen.dart';
+import 'package:local_business_directory/features/auth/presentation/screens/profile_screen.dart';
 import 'package:local_business_directory/features/business/presentation/providers/business_provider.dart';
 import 'package:local_business_directory/features/business/presentation/screens/business_profile_screen.dart';
 
@@ -12,6 +14,20 @@ class SearchScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.person),
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ProfileScreen()));
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) => const NotificationsScreen()));
+            },
+          ),
+        ],
         title: TextField(
           decoration: const InputDecoration(
             hintText: 'Search businesses...',

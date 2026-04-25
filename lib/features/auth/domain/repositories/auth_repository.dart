@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:local_business_directory/core/error/failures.dart';
+import 'package:local_business_directory/features/auth/domain/entities/notification.dart';
 import 'package:local_business_directory/features/auth/domain/entities/user.dart';
 
 abstract class AuthRepository {
@@ -12,4 +13,5 @@ abstract class AuthRepository {
   });
   Future<Either<Failure, void>> logout();
   Future<Either<Failure, User?>> getCurrentUser();
+  Future<Either<Failure, List<AppNotification>>> getNotifications();
 }

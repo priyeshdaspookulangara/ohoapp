@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:local_business_directory/core/error/failures.dart';
 import 'package:local_business_directory/features/auth/data/datasources/auth_data_source.dart';
 import 'package:local_business_directory/features/auth/data/models/user_model.dart';
+import 'package:local_business_directory/features/auth/domain/entities/notification.dart';
 import 'package:local_business_directory/features/auth/domain/entities/user.dart';
 import 'package:local_business_directory/features/auth/domain/repositories/auth_repository.dart';
 
@@ -65,6 +66,19 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(user);
     } catch (e) {
       return Left(CacheFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<AppNotification>>> getNotifications() async {
+    try {
+      // Mocked for now, usually an API call
+      return Right([
+        AppNotification(id: '1', title: 'New Enquiry', message: 'You have a new message from John.', createdAt: DateTime.now()),
+        AppNotification(id: '2', title: 'Listing Approved', message: 'Your business "Cafe Coffee" is now live!', createdAt: DateTime.now()),
+      ]);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
     }
   }
 }
