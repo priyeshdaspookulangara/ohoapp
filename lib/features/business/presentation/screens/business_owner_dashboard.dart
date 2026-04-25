@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:local_business_directory/features/business/domain/entities/business.dart';
 import 'package:local_business_directory/features/business/presentation/providers/business_provider.dart';
+import 'package:local_business_directory/features/business/presentation/screens/business_interactions_screen.dart';
 import 'package:local_business_directory/features/business/presentation/screens/edit_business_screen.dart';
 
 class BusinessOwnerDashboard extends ConsumerWidget {
@@ -25,12 +26,27 @@ class BusinessOwnerDashboard extends ConsumerWidget {
               return ListTile(
                 title: Text(business.name),
                 subtitle: Text(business.category),
-                trailing: const Icon(Icons.edit),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => EditBusinessScreen(business: business)),
-                  );
-                },
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.message),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => BusinessInteractionsScreen(businessId: business.id)),
+                        );
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => EditBusinessScreen(business: business)),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               );
             },
           );

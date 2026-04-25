@@ -34,6 +34,15 @@ final searchBusinessesProvider = FutureProvider<List<Business>>((ref) async {
   );
 });
 
+final businessOfferingsProvider = FutureProvider.family<List<Offering>, String>((ref, id) async {
+  final repository = ref.watch(businessRepositoryProvider);
+  final result = await repository.getBusinessOfferings(id);
+  return result.fold(
+    (failure) => throw failure.message,
+    (offerings) => offerings,
+  );
+});
+
 final ownedBusinessesProvider = FutureProvider<List<Business>>((ref) async {
   final repository = ref.watch(businessRepositoryProvider);
   final result = await repository.getOwnedBusinesses();

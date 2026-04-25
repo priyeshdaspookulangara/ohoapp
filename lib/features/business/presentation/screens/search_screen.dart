@@ -32,9 +32,12 @@ class SearchScreen extends ConsumerWidget {
             itemBuilder: (context, index) {
               final business = businesses[index];
               return ListTile(
-                leading: business.heroImageUrl != null
-                    ? Image.network(business.heroImageUrl!, width: 50, height: 50, fit: BoxFit.cover)
-                    : const Icon(Icons.business),
+                leading: Hero(
+                  tag: 'business_image_${business.id}',
+                  child: business.heroImageUrl != null
+                      ? Image.network(business.heroImageUrl!, width: 50, height: 50, fit: BoxFit.cover)
+                      : const Icon(Icons.business),
+                ),
                 title: Text(business.name),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

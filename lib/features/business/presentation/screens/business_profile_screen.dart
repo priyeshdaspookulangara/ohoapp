@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:local_business_directory/features/business/domain/entities/business.dart';
 import 'package:local_business_directory/features/business/presentation/providers/favorites_provider.dart';
+import 'package:local_business_directory/features/business/presentation/providers/business_provider.dart';
 import 'package:local_business_directory/features/business/presentation/widgets/enquiry_dialog.dart';
 import 'package:local_business_directory/features/business/presentation/widgets/review_dialog.dart';
 
@@ -29,10 +30,12 @@ class BusinessProfileScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (business.heroImageUrl != null)
-              Image.network(business.heroImageUrl!, height: 200, width: double.infinity, fit: BoxFit.cover)
-            else
-              Container(height: 200, color: Colors.grey[300], child: const Icon(Icons.business, size: 100)),
+            Hero(
+              tag: 'business_image_${business.id}',
+              child: business.heroImageUrl != null
+                  ? Image.network(business.heroImageUrl!, height: 200, width: double.infinity, fit: BoxFit.cover)
+                  : Container(height: 200, width: double.infinity, color: Colors.grey[300], child: const Icon(Icons.business, size: 100)),
+            ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -48,6 +51,33 @@ class BusinessProfileScreen extends ConsumerWidget {
                   if (business.phoneNumber != null) ListTile(leading: const Icon(Icons.phone), title: Text(business.phoneNumber!)),
                   if (business.email != null) ListTile(leading: const Icon(Icons.email), title: Text(business.email!)),
                   ListTile(leading: const Icon(Icons.location_on), title: Text(business.address)),
+                  const Divider(height: 32),
+                  const Text('Offerings', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                  const SizedBox(height: 8),
+                  ref.watch(businessOfferingsProvider(business.id)).when(
+                        data: (offerings) {
+                          if (offerings.isEmpty) return const Text('No offerings listed.');
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: offerings.length,
+                            itemBuilder: (context, index) {
+                              final offering = offerings[index];
+                              return Card(
+                                color: offering.isFlagship ? Colors.indigo.shade50 : null,
+                                child: ListTile(
+                                  title: Text(offering.name),
+                                  subtitle: Text(offering.description),
+                                  trailing: Text('\$${offering.price}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                                  leading: offering.isFlagship ? const Icon(Icons.flash_on, color: Colors.indigo) : null,
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        loading: () => const Center(child: CircularProgressIndicator()),
+                        error: (e, s) => Text('Error loading offerings: $e'),
+                      ),
                   const SizedBox(height: 16),
                   Row(
                     children: [
