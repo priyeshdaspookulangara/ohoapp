@@ -19,11 +19,46 @@ class AdminDashboard extends ConsumerWidget {
         body: TabBarView(
           children: [
             _ModerationList(),
-            const Center(child: Text('No pending claim requests')),
+            _ClaimRequestsList(),
             _MediaManager(),
-            const Center(child: Text('User management coming soon')),
+            _UserManagementList(),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ClaimRequestsList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: 2,
+      itemBuilder: (context, index) => ListTile(
+        title: Text('Claim Request #$index'),
+        subtitle: const Text('Reason: I am the legal owner of this shop.'),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(icon: const Icon(Icons.check, color: Colors.green), onPressed: () {}),
+            IconButton(icon: const Icon(Icons.close, color: Colors.red), onPressed: () {}),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _UserManagementList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: 5,
+      itemBuilder: (context, index) => ListTile(
+        leading: const CircleAvatar(child: Icon(Icons.person)),
+        title: Text('User $index'),
+        subtitle: Text('role: ${index % 2 == 0 ? 'customer' : 'business_owner'}'),
+        trailing: IconButton(icon: const Icon(Icons.delete_outline, color: Colors.red), onPressed: () {}),
       ),
     );
   }

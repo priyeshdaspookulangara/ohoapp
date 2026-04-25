@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:local_business_directory/features/business/domain/entities/business.dart';
 import 'package:local_business_directory/features/business/presentation/providers/business_provider.dart';
 import 'package:local_business_directory/features/business/presentation/screens/map_picker_screen.dart';
@@ -20,6 +22,8 @@ class _EditBusinessScreenState extends ConsumerState<EditBusinessScreen> {
   late TextEditingController _descriptionController;
   late TextEditingController _addressController;
   LatLng? _selectedLocation;
+  File? _heroImage;
+  final List<File> _galleryImages = [];
 
   @override
   void initState() {
@@ -71,6 +75,26 @@ class _EditBusinessScreenState extends ConsumerState<EditBusinessScreen> {
                 controller: _addressController,
                 decoration: const InputDecoration(labelText: 'Address'),
                 validator: (value) => value!.isEmpty ? 'Enter address' : null,
+              ),
+              const SizedBox(height: 16),
+              const Text('Hero Image', style: TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              GestureDetector(
+                onTap: () async {
+                  final picker = ImagePicker();
+                  final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+                  if (pickedFile != null) setState(() => _heroImage = File(pickedFile.path));
+                },
+                child: Container(
+                  height: 150,
+                  width: double.infinity,
+                  color: Colors.grey[200],
+                  child: _heroImage != null
+                      ? Image.file(_heroImage!, fit: BoxFit.cover)
+                      : (widget.business?.heroImageUrl != null
+                          ? Image.network(widget.business!.heroImageUrl!, fit: BoxFit.cover)
+                          : const Icon(Icons.add_a_photo, size: 50)),
+                ),
               ),
               const SizedBox(height: 16),
               ListTile(

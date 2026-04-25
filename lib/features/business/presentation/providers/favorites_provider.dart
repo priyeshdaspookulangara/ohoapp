@@ -13,6 +13,8 @@ final favoritesProvider = StateNotifierProvider<FavoritesNotifier, List<Business
 class FavoritesNotifier extends StateNotifier<List<Business>> {
   final SharedPreferences _prefs;
   static const String _key = 'FAVORITE_BUSINESSES';
+  static const String _offeringKey = 'FAVORITE_OFFERINGS';
+  final List<String> _favoriteOfferingIds = [];
 
   FavoritesNotifier(this._prefs) : super([]) {
     _loadFavorites();
@@ -23,6 +25,10 @@ class FavoritesNotifier extends StateNotifier<List<Business>> {
     if (data != null) {
       final List decoded = json.decode(data);
       state = decoded.map((e) => BusinessModel.fromJson(e)).toList();
+    }
+    final List<String>? offeringData = _prefs.getStringList(_offeringKey);
+    if (offeringData != null) {
+      _favoriteOfferingIds.addAll(offeringData);
     }
   }
 
@@ -55,5 +61,18 @@ class FavoritesNotifier extends StateNotifier<List<Business>> {
 
   bool isFavorite(String id) {
     return state.any((e) => e.id == id);
+  }
+
+  bool isOfferingFavorite(String id) {
+    return _favoriteOfferingIds.contains(id);
+  }
+
+  Future<void> toggleOfferingFavorite(String id) async {
+    if (_favoriteOfferingIds.contains(id)) {
+      _favoriteOfferingIds.remove(id);
+    } else {
+      _favoriteOfferingIds.add(id);
+    }
+    await _prefs.setStringList(_offeringKey, _favoriteOfferingIds);
   }
 }

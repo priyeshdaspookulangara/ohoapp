@@ -5,6 +5,7 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:local_business_directory/features/business/domain/entities/business.dart';
 import 'package:local_business_directory/features/business/presentation/providers/favorites_provider.dart';
 import 'package:local_business_directory/features/business/presentation/providers/business_provider.dart';
+import 'package:local_business_directory/features/business/presentation/widgets/claim_business_dialog.dart';
 import 'package:local_business_directory/features/business/presentation/widgets/enquiry_dialog.dart';
 import 'package:local_business_directory/features/business/presentation/widgets/review_dialog.dart';
 
@@ -55,7 +56,10 @@ class BusinessProfileScreen extends ConsumerWidget {
                       if (business.ownerId == null)
                         TextButton.icon(
                           onPressed: () {
-                            // Show claim dialog
+                            showDialog(
+                              context: context,
+                              builder: (_) => ClaimBusinessDialog(businessId: business.id),
+                            );
                           },
                           icon: const Icon(Icons.verified_user),
                           label: const Text('Claim Business'),
@@ -102,12 +106,24 @@ class BusinessProfileScreen extends ConsumerWidget {
                             itemCount: offerings.length,
                             itemBuilder: (context, index) {
                               final offering = offerings[index];
+                              final isFav = ref.watch(favoritesProvider.notifier).isOfferingFavorite(offering.id);
                               return Card(
                                 color: offering.isFlagship ? Colors.indigo.shade50 : null,
                                 child: ListTile(
                                   title: Text(offering.name),
                                   subtitle: Text(offering.description),
-                                  trailing: Text('\$${offering.price}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text('\$${offering.price}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                                      IconButton(
+                                        icon: Icon(isFav ? Icons.favorite : Icons.favorite_border, color: isFav ? Colors.red : null),
+                                        onPressed: () {
+                                          ref.read(favoritesProvider.notifier).toggleOfferingFavorite(offering.id);
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                   leading: offering.isFlagship ? const Icon(Icons.flash_on, color: Colors.indigo) : null,
                                 ),
                               );
