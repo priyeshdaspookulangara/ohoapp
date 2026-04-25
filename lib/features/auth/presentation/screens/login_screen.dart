@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:local_business_directory/features/auth/domain/entities/user.dart';
 import 'package:local_business_directory/features/auth/presentation/providers/auth_provider.dart';
 import 'package:local_business_directory/features/auth/presentation/screens/register_screen.dart';
+import 'package:local_business_directory/features/auth/presentation/screens/admin_dashboard.dart';
 import 'package:local_business_directory/features/business/presentation/screens/business_owner_dashboard.dart';
 import 'package:local_business_directory/features/business/presentation/screens/search_screen.dart';
 
@@ -35,9 +36,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           const SnackBar(content: Text('Login Successful')),
         );
 
-        final destination = next.user?.role == UserRole.businessOwner
-          ? const BusinessOwnerDashboard()
-          : const SearchScreen();
+        final Widget destination;
+        if (next.user?.role == UserRole.admin) {
+          destination = const AdminDashboard();
+        } else if (next.user?.role == UserRole.businessOwner) {
+          destination = const BusinessOwnerDashboard();
+        } else {
+          destination = const SearchScreen();
+        }
 
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => destination),

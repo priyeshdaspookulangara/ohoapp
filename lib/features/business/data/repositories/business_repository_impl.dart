@@ -114,4 +114,64 @@ class BusinessRepositoryImpl implements BusinessRepository {
     // To be implemented
     return const Right([]);
   }
+
+  @override
+  Future<Either<Failure, List<Review>>> getBusinessReviews(String businessId) async {
+    try {
+      final results = await remoteDataSource.getReviews(businessId);
+      return Right(results);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> postReview(String businessId, double rating, String comment) async {
+    try {
+      await remoteDataSource.postReview(businessId, rating, comment);
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> replyToReview(String reviewId, String reply) async {
+    try {
+      await remoteDataSource.replyToReview(reviewId, reply);
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<Enquiry>>> getBusinessEnquiries(String businessId) async {
+    try {
+      final results = await remoteDataSource.getEnquiries(businessId);
+      return Right(results);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> sendEnquiry(String businessId, String subject, String message) async {
+    try {
+      await remoteDataSource.sendEnquiry(businessId, subject, message);
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> replyToEnquiry(String enquiryId, String reply) async {
+    try {
+      await remoteDataSource.replyToEnquiry(enquiryId, reply);
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
 }
