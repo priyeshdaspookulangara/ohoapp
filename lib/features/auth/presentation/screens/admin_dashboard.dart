@@ -13,17 +13,46 @@ class AdminDashboard extends ConsumerWidget {
         appBar: AppBar(
           title: const Text('Admin Dashboard'),
           bottom: const TabBar(
-            tabs: [Tab(text: 'Moderation'), Tab(text: 'Claims'), Tab(text: 'Users')],
+            tabs: [Tab(text: 'Moderation'), Tab(text: 'Claims'), Tab(text: 'Media'), Tab(text: 'Users')],
           ),
         ),
         body: TabBarView(
           children: [
             _ModerationList(),
             const Center(child: Text('No pending claim requests')),
+            _MediaManager(),
             const Center(child: Text('User management coming soon')),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _MediaManager extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final allBusinesses = ref.watch(searchBusinessesProvider);
+    return allBusinesses.when(
+      data: (businesses) {
+        final allImages = businesses.expand((b) => [if (b.heroImageUrl != null) b.heroImageUrl!, ...b.galleryUrls]).toList();
+        if (allImages.isEmpty) return const Center(child: Text('No media to moderate'));
+        return GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+          itemCount: allImages.length,
+          itemBuilder: (context, index) => Stack(
+            children: [
+              Image.network(allImages[index], fit: BoxFit.cover, width: double.infinity, height: double.infinity),
+              Positioned(
+                right: 0,
+                child: IconButton(icon: const Icon(Icons.delete, color: Colors.red), onPressed: () {}),
+              ),
+            ],
+          ),
+        );
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, s) => Center(child: Text('Error: $e')),
     );
   }
 }

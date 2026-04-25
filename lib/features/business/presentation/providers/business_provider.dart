@@ -12,7 +12,8 @@ final businessRemoteDataSourceProvider = Provider<BusinessRemoteDataSource>((ref
 
 final businessRepositoryProvider = Provider<BusinessRepository>((ref) {
   final remoteDataSource = ref.watch(businessRemoteDataSourceProvider);
-  return BusinessRepositoryImpl(remoteDataSource: remoteDataSource);
+  final localDataSource = ref.watch(authLocalDataSourceProvider);
+  return BusinessRepositoryImpl(remoteDataSource: remoteDataSource, localDataSource: localDataSource);
 });
 
 final searchQueryProvider = StateProvider<String>((ref) => '');

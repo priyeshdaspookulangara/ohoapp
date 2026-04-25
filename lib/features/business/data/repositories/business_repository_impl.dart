@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:dartz/dartz.dart';
 import 'package:local_business_directory/core/error/failures.dart';
+import 'package:local_business_directory/features/auth/data/datasources/auth_data_source.dart';
 import 'package:local_business_directory/features/business/data/datasources/business_remote_data_source.dart';
 import 'package:local_business_directory/features/business/data/models/business_model.dart';
 import 'package:local_business_directory/features/business/data/models/offering_model.dart';
@@ -9,8 +11,9 @@ import 'package:local_business_directory/features/business/domain/repositories/b
 
 class BusinessRepositoryImpl implements BusinessRepository {
   final BusinessRemoteDataSource remoteDataSource;
+  final AuthLocalDataSource localDataSource;
 
-  BusinessRepositoryImpl({required this.remoteDataSource});
+  BusinessRepositoryImpl({required this.remoteDataSource, required this.localDataSource});
 
   @override
   Future<Either<Failure, List<Business>>> searchBusinesses({
@@ -28,8 +31,19 @@ class BusinessRepositoryImpl implements BusinessRepository {
         longitude: longitude,
         radius: radius,
       );
+
+      // Cache results for offline support
+      final encoded = json.encode(results.map((e) => (e as BusinessModel).toJson()).toList());
+      await localDataSource.cacheSearch(encoded);
+
       return Right(results);
     } catch (e) {
+      // Try to return cached data if offline
+      final cached = await localDataSource.getCachedSearch();
+      if (cached != null) {
+        final List list = json.decode(cached);
+        return Right(list.map((e) => BusinessModel.fromJson(e)).toList());
+      }
       return Left(ServerFailure(e.toString()));
     }
   }

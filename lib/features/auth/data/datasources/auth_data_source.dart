@@ -27,6 +27,8 @@ abstract class AuthLocalDataSource {
   Future<void> clearToken();
   Future<void> cacheUser(UserModel user);
   Future<UserModel?> getCachedUser();
+  Future<void> cacheSearch(String json);
+  Future<String?> getCachedSearch();
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -114,5 +116,15 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
       return UserModel.fromJson(json.decode(jsonString));
     }
     return null;
+  }
+
+  @override
+  Future<void> cacheSearch(String json) async {
+    await sharedPreferences.setString('CACHED_SEARCH', json);
+  }
+
+  @override
+  Future<String?> getCachedSearch() async {
+    return sharedPreferences.getString('CACHED_SEARCH');
   }
 }

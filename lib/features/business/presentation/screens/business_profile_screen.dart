@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:local_business_directory/features/business/domain/entities/business.dart';
 import 'package:local_business_directory/features/business/presentation/providers/favorites_provider.dart';
 import 'package:local_business_directory/features/business/presentation/providers/business_provider.dart';
@@ -64,6 +65,18 @@ class BusinessProfileScreen extends ConsumerWidget {
                   const SizedBox(height: 8),
                   if (business.phoneNumber != null) ListTile(leading: const Icon(Icons.phone), title: Text(business.phoneNumber!)),
                   if (business.email != null) ListTile(leading: const Icon(Icons.email), title: Text(business.email!)),
+                  if (business.youtubeVideoUrl != null) ...[
+                    const Divider(),
+                    const Text('Video', style: TextStyle(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 8),
+                    YoutubePlayer(
+                      controller: YoutubePlayerController(
+                        initialVideoId: YoutubePlayer.convertUrlToId(business.youtubeVideoUrl!) ?? '',
+                        flags: const YoutubePlayerFlags(autoPlay: false),
+                      ),
+                      showVideoProgressIndicator: true,
+                    ),
+                  ],
                   ListTile(
                     leading: const Icon(Icons.location_on),
                     title: Text(business.address),
