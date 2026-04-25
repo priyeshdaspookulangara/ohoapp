@@ -18,6 +18,8 @@ class BusinessModel extends Business {
     super.youtubeVideoUrl,
     super.isFeatured,
     super.ownerId,
+    super.averageRating,
+    super.reviewCount,
   });
 
   factory BusinessModel.fromJson(Map<String, dynamic> json) {
@@ -40,6 +42,8 @@ class BusinessModel extends Business {
       youtubeVideoUrl: json['youtube_video_url'],
       isFeatured: json['is_featured'] == 1 || json['is_featured'] == true,
       ownerId: json['owner_id']?.toString(),
+      averageRating: (json['average_rating'] as num?)?.toDouble() ?? 0.0,
+      reviewCount: json['review_count'] as int? ?? 0,
     );
   }
 
@@ -61,6 +65,8 @@ class BusinessModel extends Business {
       'youtube_video_url': youtubeVideoUrl,
       'is_featured': isFeatured ? 1 : 0,
       'owner_id': ownerId,
+      'average_rating': averageRating,
+      'review_count': reviewCount,
     };
   }
 }

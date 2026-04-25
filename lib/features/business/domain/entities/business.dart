@@ -17,6 +17,8 @@ class Business extends Equatable {
   final String? youtubeVideoUrl;
   final bool isFeatured;
   final String? ownerId;
+  final double averageRating;
+  final int reviewCount;
 
   const Business({
     required this.id,
@@ -35,6 +37,8 @@ class Business extends Equatable {
     this.youtubeVideoUrl,
     this.isFeatured = false,
     this.ownerId,
+    this.averageRating = 0.0,
+    this.reviewCount = 0,
   });
 
   @override
@@ -55,5 +59,7 @@ class Business extends Equatable {
         youtubeVideoUrl,
         isFeatured,
         ownerId,
+        averageRating,
+        reviewCount,
       ];
 }

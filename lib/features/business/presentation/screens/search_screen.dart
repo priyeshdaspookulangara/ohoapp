@@ -36,7 +36,18 @@ class SearchScreen extends ConsumerWidget {
                     ? Image.network(business.heroImageUrl!, width: 50, height: 50, fit: BoxFit.cover)
                     : const Icon(Icons.business),
                 title: Text(business.name),
-                subtitle: Text(business.category),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(business.category),
+                    Row(
+                      children: [
+                        const Icon(Icons.star, size: 16, color: Colors.amber),
+                        Text(' ${business.averageRating.toStringAsFixed(1)} (${business.reviewCount})'),
+                      ],
+                    ),
+                  ],
+                ),
                 trailing: business.isFeatured ? const Icon(Icons.star, color: Colors.amber) : null,
                 onTap: () {
                   Navigator.of(context).push(
